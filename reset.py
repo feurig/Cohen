@@ -89,8 +89,8 @@ try:
             message, delta_time = midi_in.get_message()
             if message:
                 if (len(message)>14 and message[0]==SYSEX_BEGIN): #if its a sysex message
-                    if (message[1]==SYSEX_NON_REAL_TIME and message[3]==SYSEX_GENERAL_INFO):
-                        # and check to see that its a reply....
+                    if (message[1]==SYSEX_NON_REAL_TIME and message[3]==SYSEX_GENERAL_INFO
+                        and message[4]==SYSEX_IDENTITY_REPLY ):
                         print 'MANUFACTURER ID: 0x%02X 0x%02X 0x%02X' % (
                                message[5],message[6],message[7])
                         print "FAMILY ID      : 0x%02X%02x" % (
