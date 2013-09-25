@@ -76,34 +76,6 @@ const MIDI_EVENT_PACKET_t standardIDResponse[]={
         MIDIv1_SYSEX_END,
         0}
 };
-/*
-const MIDI_EventPacket_t standardIDResponse[]={
-    {   CIN_SYSEX,
-        MIDIv1_SYSEX_START,
-        USYSEX_NON_REAL_TIME,
-        USYSEX_ALL_CHANNELS},
-    {   CIN_SYSEX,
-        USYSEX_GENERAL_INFO,
-        USYSEX_GI_ID_RESPONSE,
-        ARDUINO_MMA_VENDOR_1 },
-    {   CIN_SYSEX ,
-        ARDUINO_MMA_VENDOR_2, // extended ID
-        ARDUINO_MMA_VENDOR_3 , // extended ID
-        1 }, // family #1
-    {   CIN_SYSEX,
-        2, // family #2
-        1, // part   #1
-        2 }, // part   #2
-    {   CIN_SYSEX,
-        0, // version 1
-        0, // version 2
-        1 }, // version 3
-    {   CIN_SYSEX_ENDS_IN_2,
-        '!', // lgl compatible
-        MIDIv1_SYSEX_END,
-        0 } // padd
-};*/
-//#define STANDARD_ID_RESPONSE_LENGTH (sizeof(standardIDResponse))
 
 typedef enum  {NOT_IN_SYSEX=0,COULD_BE_MY_SYSEX,YUP_ITS_MY_SYSEX,ITS_NOT_MY_SYSEX} sysexStates;
 volatile MIDI_EVENT_PACKET_t sysexBuffer[MAX_SYSEX_SIZE];

@@ -32,7 +32,8 @@ import time
 import sys
 import serial
 import serial.tools.list_ports
-from subprocess import call
+#from subprocess import call
+import os
 
 # this stuff should probably go in a constants file.
 SYSEX_BEGIN             =0xf0
@@ -73,6 +74,12 @@ resetthedevice=[SYSEX_BEGIN,
     our devices on it.
     eventually this should be expanded to handle multiple devices and understand multiple clients
 '''
+if (len(sys.argv)<2):
+    print "USAGE: %s <hex file>" % sys.argv[0]
+    exit()
+
+hex_file_name = sys.argv[1]
+
 we_are_done = False
 try:
     serial_ports_before=serial.tools.list_ports.comports()
@@ -114,6 +121,12 @@ try:
                             while len(new_serial_ports) < 1 :
                                 new_serial_ports=list(set(serial.tools.list_ports.comports())-set(serial_ports_before))
                             print new_serial_ports[0][0]
+                            print "avrdude -p atmega32u4 -P %s -c avr109  -b57600 -U flash:w:%s" % (
+                                new_serial_ports[0][0], hex_file_name
+                            )
+                            os.system("avrdude -p atmega32u4 -P %s -c avr109  -b57600 -U flash:w:%s" % (
+                                        new_serial_ports[0][0], hex_file_name
+                            ))
 
                             # Now we can call avrdude with the new serial port. 
 #exit()
