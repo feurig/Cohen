@@ -50,8 +50,8 @@ ARDUINO_MMA_VENDOR_1   =0x7D
 ARDUINO_MMA_VENDOR_2   =0x23
 ARDUINO_MMA_VENDOR_3   =0x41
 
-LGL_RESET_CMD          =0x1e
-#LGL_BOOTLOADER_CMD     =0x1f
+LGL_RESET_CMD          =0x1f
+LGL_BOOTLOADER_CMD     =0x1e
 
 
 we_are_done=False
@@ -64,7 +64,7 @@ resetthedevice=[SYSEX_BEGIN,
                 ARDUINO_MMA_VENDOR_2,
                 ARDUINO_MMA_VENDOR_3,
                 0x0a, #device/channel is currently ignored...
-                LGL_RESET_CMD,
+                LGL_BOOTLOADER_CMD,
                 SYSEX_END_SYSEX]
 
 # main code begins here.

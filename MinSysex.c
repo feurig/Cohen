@@ -41,8 +41,6 @@
 #include <avr/wdt.h>
 #include <util/delay.h>
 
-#define MAX_SYSEX_SIZE ((256+1)/4)
-
 /********************************* ACHTUNG! ignores usbmidi cable ********************************/
 const MIDI_EVENT_PACKET_t standardIDResponse[]={
     {   CIN_SYSEX,
@@ -78,7 +76,7 @@ const MIDI_EVENT_PACKET_t standardIDResponse[]={
 };
 
 typedef enum  {NOT_IN_SYSEX=0,COULD_BE_MY_SYSEX,YUP_ITS_MY_SYSEX,ITS_NOT_MY_SYSEX} sysexStates;
-volatile MIDI_EVENT_PACKET_t sysexBuffer[MAX_SYSEX_SIZE];
+volatile MIDI_EVENT_PACKET_t sysexBuffer[MAX_LGL_SYSEX_SIZE];
 volatile sysexStates sysexState;
 volatile int sysexFinger=0;
 
@@ -125,14 +123,27 @@ void dealWithItQuickly(){
             break;
         case ARDUINO_MMA_VENDOR_1:
             if (sysexBuffer[1].midi2==LGL_RESET_CMD) {
- 
                 Jump_To_Bootloader();
-                /* Can't happen. */
-                //ASSERT_FAULT(0);
-
+ 
             }
     
         default:
+            // userland sysex copy the sysex to the buffer if its not handled by us....
+            mySysexBufferIndex=0;
+            for (uint8_t i=0; i<sysexFinger; i++) {
+                mySysexBuffer[mySysexBufferIndex++]=sysexBuffer[i].midi0;
+                if ((sysexBuffer[i].cin == CIN_SYSEX_ENDS_IN_1)
+                    ||(sysexBuffer[i].cin == CIN_1BYTE)
+                    ) continue;
+                mySysexBuffer[mySysexBufferIndex++]=sysexBuffer[i].midi1;
+                if ((sysexBuffer[i].cin == CIN_SYSEX_ENDS_IN_2)
+                    ||(sysexBuffer[i].cin == CIN_PROGRAM_CHANGE)
+                    ||(sysexBuffer[i].cin == CIN_CHANNEL_PRESSURE)
+                    ||(sysexBuffer[i].cin == CIN_2BYTE_SYS_COMMON)
+                    ) continue;
+                mySysexBuffer[mySysexBufferIndex++]=sysexBuffer[i].midi2;
+            }
+            
             break;
     }
     ;//turn the led on?
@@ -148,7 +159,8 @@ void minSysexHandler(MIDI_EVENT_PACKET_t e) {
     }
     
     if ((sysexState==YUP_ITS_MY_SYSEX) && (sysexFinger>MAX_SYSEX_SIZE)){
-        sysexState=ITS_NOT_MY_SYSEX; //eisenhower policy. Even if its mine I cant deal with it.
+        sysexState=ITS_NOT_MY_SYSEX;
+        // move the data here to the sysex buffer....
     }
 
     switch (e.cin) {
@@ -157,8 +169,6 @@ void minSysexHandler(MIDI_EVENT_PACKET_t e) {
                 case NOT_IN_SYSEX : // new sysex.
                     sysexFinger=0;
                     if (e.midi0 == MIDIv1_SYSEX_START) {
-                        
-                        
                         if (e.midi1==USYSEX_REAL_TIME
                             ||e.midi1==USYSEX_NON_REAL_TIME) {
                             if ((e.midi2==myMidiChannel)
@@ -182,11 +192,39 @@ void minSysexHandler(MIDI_EVENT_PACKET_t e) {
                         sysexBuffer[sysexFinger++]=e;
                     } else {
                         sysexState=ITS_NOT_MY_SYSEX;
+                        sysexBuffer[sysexFinger++]=e;
+                        //move previous data to sysex
+                        mySysexBufferIndex=0;
+                        for (uint8_t i=0; i<sysexFinger; i++) {
+                            mySysexBuffer[mySysexBufferIndex++]=sysexBuffer[i].midi0;
+                            if ((sysexBuffer[i].cin == CIN_SYSEX_ENDS_IN_1)
+                                ||(sysexBuffer[i].cin == CIN_1BYTE)
+                                ) continue;
+                            mySysexBuffer[mySysexBufferIndex++]=sysexBuffer[i].midi1;
+                            if ((sysexBuffer[i].cin == CIN_SYSEX_ENDS_IN_2)
+                                ||(sysexBuffer[i].cin == CIN_PROGRAM_CHANGE)
+                                ||(sysexBuffer[i].cin == CIN_CHANNEL_PRESSURE)
+                                ||(sysexBuffer[i].cin == CIN_2BYTE_SYS_COMMON)
+                                ) continue;
+                            mySysexBuffer[mySysexBufferIndex++]=sysexBuffer[i].midi2;
+                        }
+                        
                     }
                     break;
                 case YUP_ITS_MY_SYSEX:
                     sysexBuffer[sysexFinger++]=e;
                     break;
+                case ITS_NOT_MY_SYSEX:
+                    // if the buffer is full DTMFA
+                    if ((mySysexBufferIndex+3)<MAX_SYSEX_SIZE) {
+                        mySysexBufferIndex=0;
+                        sysexState=NOT_IN_SYSEX;
+                    } else {
+                        mySysexBuffer[mySysexBufferIndex++]=e.midi0;
+                        mySysexBuffer[mySysexBufferIndex++]=e.midi1;
+                        mySysexBuffer[mySysexBufferIndex++]=e.midi2;
+                     }
+                    
                 default:
                     break;                    
             }            
@@ -198,8 +236,16 @@ void minSysexHandler(MIDI_EVENT_PACKET_t e) {
             if (sysexState==YUP_ITS_MY_SYSEX) {
                 dealWithItQuickly(); // its our sysex and we will cry if we want to
                 LEDs_ToggleLEDs(LEDS_LED2);
+            } else {
+                mySysexBuffer[mySysexBufferIndex++]=e.midi0;
+                if (e.cin != CIN_SYSEX_ENDS_IN_1) {
+                    mySysexBuffer[mySysexBufferIndex++]=e.midi1;
+                } else if (e.cin == CIN_SYSEX_ENDS_IN_3) {
+                    mySysexBuffer[mySysexBufferIndex++]=e.midi2;
+                }
             }
-            //sysexFinger=0;
+            
+            //move sysex data to buffer...
             sysexState=NOT_IN_SYSEX;
             break;
         default:
@@ -216,6 +262,18 @@ void Jump_To_Bootloader(void)
     // Wait for the USB detachment to register on the host
     Delay_MS(500);
     *(uint16_t *)0x0800 = 0x7777;
+    wdt_enable(WDTO_250MS);
+    for (;;);
+}
+
+void Software_Reset(void)
+{
+    // If USB is used, detach from the bus and reset it
+    USB_Disable(); // Disable all interrupts
+    cli();
+    // Wait for the USB detachment to register on the host
+    Delay_MS(500);
+    *(uint16_t *)0x0800 = 0;
     wdt_enable(WDTO_250MS);
     for (;;);
 }

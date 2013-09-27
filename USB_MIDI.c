@@ -34,7 +34,7 @@
  *  the demo and is responsible for the initial application hardware configuration.
  */
 
-#include "MIDI.h"
+#include "USB_MIDI.h"
 
 /** LUFA MIDI Class driver interface configuration and state information. This structure is
  *  passed to all MIDI Class driver functions, so that multiple instances of the same class
@@ -64,6 +64,8 @@ volatile uint8_t myMidiChannel=DEFAULT_MIDI_CHANNEL;
 volatile uint8_t myMidiDevice=DEFAULT_MIDI_DEVICE;
 volatile uint8_t myMidiCable=DEFAULT_MIDI_CABLE;
 volatile uint8_t myMidiID[]={ARDUINO_MMA_VENDOR_1 ,ARDUINO_MMA_VENDOR_2,ARDUINO_MMA_VENDOR_3};
+volatile uint8_t mySysexBuffer[MAX_SYSEX_SIZE];
+volatile uint8_t mySysexBufferIndex;
 
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
@@ -82,8 +84,11 @@ int main(void)
 
 		while (MIDI_Device_ReceiveEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *)(&e)))
 		{
-             minSysexHandler(e);
-            
+            if (CIN_IS_SYSEX(e.cin)) {
+                minSysexHandler(e);
+
+            }
+                         
         }
 
 		MIDI_Device_USBTask(&USB_MIDI_Interface);
@@ -114,9 +119,7 @@ void SetupHardware(void)
 #endif
 
 	/* Hardware Initialization */
-//	Joystick_Init();
 	LEDs_Init();
-//	Buttons_Init();
 	USB_Init();
 }
 
