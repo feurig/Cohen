@@ -11,6 +11,7 @@ The idea here is to create a lufa based midi framework for use on the stock usb 
         5. Port of MCs midi client to pic32 (dip)
         5. A port of jboones nuvoton cdc code to midi.
         6. YOUR CONTRIBUTION HERE...
+   
     b. Targeted Libraries
         1. Arduino midi v1 (gpl2)
         2. Arruino midi v2 (gpl3)
@@ -37,7 +38,10 @@ Because of this the two streams are split out between packets and sysex data. So
 The remaining details should be as hidden and interchangable [^1] as possible.
 
 ###MinSysex
-A minimal sysex handler, called by either the maintainence tasks or by MidiEventAvailable(), should handle at a minimum the universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This should be expanded to identify the capabilities, architecture, and code loader method, and perhaps a subset of common midi settings (channel,mode etc.) Eventually this sysex subset form a protocall called "Let's Get Loaded (LGL)"
+A minimal sysex handler, called by either the maintainence tasks or by MidiEventAvailable(), should handle at a minim
+
+
+um the universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This should be expanded to identify the capabilities, architecture, and code loader method, and perhaps a subset of common midi settings (channel,mode etc.) Eventually this sysex subset form a protocall called "Let's Get Loaded (LGL)"
 
 This handler should also buffer sysex's that are not directed at the target or that l with functions which can be overwritten.
 
