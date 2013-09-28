@@ -34,7 +34,7 @@ Because of this the two streams are split out between packets and sysex data. So
     void GetSysex ([interface])
     void SendSysex (uint8_t *messege, [interface])
 
-The remaining details should be as hidden angeable as possible.
+The remaining details should be as hidden and interchangable [^1] as possible.
 
 ###MinSysex
 A minimal sysex handler, called by either the maintainence tasks or by MidiEventAvailable(), should handle at a minimum the universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This should be expanded to identify the capabilities, architecture, and code loader method, and perhaps a subset of common midi settings (channel,mode etc.) Eventually this sysex subset form a protocall called "Let's Get Loaded (LGL)"
@@ -43,6 +43,9 @@ This handler should also buffer sysex's that are not directed at the target or t
 
 ### Hardware Abstractions.
 Some of the work involved with the LUFA library is to provide feedback for the states of the the usb connection itself. This requires a hardware abstraction for each board supported by the library. In our use case this  would better be served by providing weak functions to be overridden user functions. 
+
+[^1]: because you cant parse it doesnt mean you need to magle it thank your for letting me test you Mau… You are this close to total fail.
+
 
 
 
