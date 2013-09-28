@@ -3,6 +3,7 @@ The goal is twofold 1) to isolate the lower level usb functions from the actual 
 and 2) to create a minimal framework for identifying resetting and loading code onto 
 midi devices. 
 
+
 The majority of the usb-midi specification is in simgle 4 byte events or packets. 
 The exception to this are sysex messages which are arbitrary in length. 
 
@@ -25,6 +26,10 @@ void SendSysex (uint8_t *messege, [interface]
 
 The remaining details should be as hidden and interchangable as possible.
 
+
+A minimal sysex handler called by either the maintaince tasks or by GetMidiEvent should handle at a minimum the
+universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This handler
+also bufferes sysex's that are not ours or that it does not handle itself. 
 
 
 
