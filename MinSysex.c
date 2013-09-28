@@ -105,7 +105,7 @@ void dealWithItQuickly(void);
  * 
  */
 void dealWithItQuickly(){
-    LEDs_ToggleLEDs(LEDS_LED2);
+//    LEDs_ToggleLEDs(LEDS_LED2);
     switch (sysexBuffer[0].midi1) {
 
         case USYSEX_NON_REAL_TIME:
@@ -235,7 +235,7 @@ void minSysexHandler(MIDI_EVENT_PACKET_t e) {
             sysexBuffer[sysexFinger++]=e;
             if (sysexState==YUP_ITS_MY_SYSEX) {
                 dealWithItQuickly(); // its our sysex and we will cry if we want to
-                LEDs_ToggleLEDs(LEDS_LED2);
+//                LEDs_ToggleLEDs(LEDS_LED2);
             } else {
                 mySysexBuffer[mySysexBufferIndex++]=e.midi0;
                 if (e.cin != CIN_SYSEX_ENDS_IN_1) {
