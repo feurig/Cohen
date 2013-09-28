@@ -12,10 +12,15 @@ I am trying to arrive at some glue where the upper layers can provide hooks for 
 simply provide an interface like this.
 
 bool MidiEventAvaliable ([interface])
+
 void GetMidiEvent ([interface])
+
 void SendMidiEvent ([interface])
+
 bool SysexAvaliable ([intervace])
+
 void GetSysex ([interface])
+
 void SendSysex (uint8_t *messege, [interface]
 
 The remaining details should be as hidden and interchangable as possible.
