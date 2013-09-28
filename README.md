@@ -4,6 +4,7 @@ The idea here is to create a lufa based midi framework for use on the stock usb 
 1. to isolate the lower level usb functions from the actual programs
 
     a. Targeted transports
+    
         1. Lufa
         2. Maple Midi
         3. A neutered version of pjrc's Arduino midi
@@ -13,6 +14,7 @@ The idea here is to create a lufa based midi framework for use on the stock usb 
         6. YOUR CONTRIBUTION HERE...
    
     b. Targeted Libraries
+    
         1. Arduino midi v1 (gpl2)
         2. Arruino midi v2 (gpl3)
         3. alex normans stack (gpl3)
