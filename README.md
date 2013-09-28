@@ -22,14 +22,16 @@ bool SysexAvaliable ([intervace])
 
 void GetSysex ([interface])
 
-void SendSysex (uint8_t *messege, [interface]
+void SendSysex (uint8_t *messege, [interface])
 
 The remaining details should be as hidden and interchangable as possible.
 
 
 A minimal sysex handler called by either the maintaince tasks or by GetMidiEvent should handle at a minimum the
-universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This handler
-also bufferes sysex's that are not ours or that it does not handle itself. 
+universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This should be
+expanded to identify the capabilities, architecture, and code loader method, and perhaps a subset of common midi 
+settings (channel,mode etc.) 
+This handler should also buffer sysex's that are not directed at the target or that the handler does not deal with. 
 
 
 
