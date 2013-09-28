@@ -12,17 +12,12 @@ interupt driven. (maple midi zb) and some like lufa are polling based. The data 
 I am trying to arrive at some glue where the upper layers can provide hooks for the maintainance tasks and 
 simply provide an interface like this.
 
-bool MidiEventAvaliable ([interface])
-
-void GetMidiEvent ([interface])
-
-void SendMidiEvent ([interface])
-
-bool SysexAvaliable ([intervace])
-
-void GetSysex ([interface])
-
-void SendSysex (uint8_t *messege, [interface])
+    bool MidiEventAvaliable ([interface])
+    void GetMidiEvent ([interface])
+    void SendMidiEvent ([interface])
+    bool SysexAvaliable ([intervace])
+    void GetSysex ([interface])
+    void SendSysex (uint8_t *messege, [interface])
 
 The remaining details should be as hidden and interchangable as possible.
 
