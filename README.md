@@ -2,6 +2,7 @@
 The idea here is to create a lufa based midi framework for use on the stock usb capable arduino. The goal is twofold:
 
 1. to isolate the lower level usb functions from the actual programs
+
     a. Targeted transports
         1. Lufa
         2. Maple Midi
