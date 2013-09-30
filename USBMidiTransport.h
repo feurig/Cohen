@@ -68,12 +68,21 @@
 
 	/* Function Prototypes: */
 		void SetupHardware(void);
-		void CheckJoystickMovement(void);
-
+		
 		void EVENT_USB_Device_Connect(void);
 		void EVENT_USB_Device_Disconnect(void);
 		void EVENT_USB_Device_ConfigurationChanged(void);
 		void EVENT_USB_Device_ControlRequest(void);
+
+        void InitializeUSBMidi(void);
+        bool USBMidiEventAvailable (void);
+        MIDI_EVENT_PACKET_t GetUSBMidiEvent (void);
+        void SendUSBMidiEvent (MIDI_EVENT_PACKET_t);
+        bool USBSysexAvaliable (void);
+        uint8_t * GetUSBSysex (void);
+        void SendUSBSysex (uint8_t *messege);
+
+
 
 #endif
 

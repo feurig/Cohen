@@ -13,12 +13,12 @@
 
 MCU          = atmega32u4
 ARCH         = AVR8
-BOARD        = LEONARDO
+BOARD        = NONE
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
 TARGET       = USB_MIDI
-SRC          = $(TARGET).c Descriptors.c MinSysex.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
+SRC          = main.c USBMidiTransport.c Descriptors.c MinSysex.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
 LUFA_PATH    = ../../../../LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 LD_FLAGS     =

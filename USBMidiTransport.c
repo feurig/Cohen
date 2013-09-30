@@ -34,7 +34,7 @@
  *  the demo and is responsible for the initial application hardware configuration.
  */
 
-#include "USB_MIDI.h"
+#include "USBMidiTransport.h"
 
 /** LUFA MIDI Class driver interface configuration and state information. This structure is
  *  passed to all MIDI Class driver functions, so that multiple instances of the same class
@@ -60,40 +60,44 @@ USB_ClassInfo_MIDI_Device_t USB_MIDI_Interface =
 			},
 	};
 
-volatile uint8_t myMidiChannel=DEFAULT_MIDI_CHANNEL;
-volatile uint8_t myMidiDevice=DEFAULT_MIDI_DEVICE;
-volatile uint8_t myMidiCable=DEFAULT_MIDI_CABLE;
-volatile uint8_t myMidiID[]={ARDUINO_MMA_VENDOR_1 ,ARDUINO_MMA_VENDOR_2,ARDUINO_MMA_VENDOR_3};
-volatile uint8_t mySysexBuffer[MAX_SYSEX_SIZE];
-volatile uint8_t mySysexBufferIndex;
-
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
  */
 
 
-int main(void)
+void InitializeUSBMidi()
 {
 	SetupHardware();
     MIDI_EVENT_PACKET_t e;
 //	LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
 	GlobalInterruptEnable();
 
-	for (;;)
-	{
+}
 
-		while (MIDI_Device_ReceiveEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *)(&e)))
-		{
-            if (CIN_IS_SYSEX(e.cin)) {
-                minSysexHandler(e);
+/* 
+ not very efficient. This should put all incoming packets into a que.
+ */
+volatile MIDI_EVENT_PACKET_t currentPacket;
 
-            }
-                         
+MIDI_EVENT_PACKET_t GetUSBMidiEvent (void) { return currentPacket; }
+//void SendUSBMidiEvent (MIDI_EVENT_PACKET_t);
+//bool USBSysexAvaliable (void);
+//uint8_t * GetUSBSysex (void);
+//void SendUSBSysex (uint8_t *messege);
+
+
+bool USBMidiEventAvailable (void)
+{
+    
+    if (MIDI_Device_ReceiveEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *)(&currentPacket)))
+    {
+        if (CIN_IS_SYSEX(currentPacket.cin)) {
+            minSysexHandler(currentPacket);
         }
-
-		MIDI_Device_USBTask(&USB_MIDI_Interface);
-		USB_USBTask();
-	}
+    }
+    
+    MIDI_Device_USBTask(&USB_MIDI_Interface);
+    USB_USBTask();
 }
 
 

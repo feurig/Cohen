@@ -10,7 +10,7 @@
 
 
 #include "MidiSpecs.h"
-#include "USB_MIDI.h"
+#include "USBMidiTransport.h"
 //#include "LGL.h"
 
 #define ARDUINO_MMA_VENDOR_1   0x7D
