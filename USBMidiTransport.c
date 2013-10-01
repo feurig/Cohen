@@ -74,30 +74,105 @@ void InitializeUSBMidi()
 
 }
 
-/* 
- not very efficient. This should put all incoming packets into a que.
+/*
+ Functional stub... finished routine should put all incoming packets into a que.
  */
 volatile MIDI_EVENT_PACKET_t currentPacket;
 
 MIDI_EVENT_PACKET_t GetUSBMidiEvent (void) { return currentPacket; }
-//void SendUSBMidiEvent (MIDI_EVENT_PACKET_t);
-//bool USBSysexAvaliable (void);
-//uint8_t * GetUSBSysex (void);
-//void SendUSBSysex (uint8_t *messege);
 
+bool USBSysexAvaliable (void){
+    return ((mySysexBufferIndex) && (mySysexBuffer[mySysexBufferIndex]==MIDIv1_SYSEX_END ));
+}
+uint8_t * GetUSBSysex (void) {
+    mySysexBuffer[mySysexBufferIndex+1]='\0';
+    return mySysexBuffer;
+};
+
+void SendUSBSysex (uint8_t *messege) {
+    uint8_t len=strlen(messege);
+    uint8_t index=0;
+    MIDI_EVENT_PACKET_t t;
+    t.cable=myMidiCable;
+    t.cin=CIN_SYSEX;
+    t.midi0=MIDIv1_SYSEX_START;
+    if (mySysexBuffer[0]==MIDIv1_SYSEX_START) {
+        index++;
+    }
+    
+    if (mySysexBuffer[len]==MIDIv1_SYSEX_END) {
+        len--;
+    }
+    
+    if (len-index<1) {
+        t.cin=CIN_SYSEX_ENDS_IN_1;
+        t.midi0=MIDIv1_SYSEX_END;
+        t.midi1=t.midi2='\0';
+    } else if (len-index<2) {
+        t.cin=CIN_SYSEX_ENDS_IN_2;
+        t.midi0=mySysexBuffer[index++]&0x7f;
+        t.midi1=MIDIv1_SYSEX_END;
+        t.midi2='\0';
+    } else if (len-index<3) {
+        t.cin=CIN_SYSEX_ENDS_IN_2;
+        t.midi0=mySysexBuffer[index++]&0x7f;
+        t.midi1=mySysexBuffer[index++]&0x7f;
+        t.midi2=MIDIv1_SYSEX_END;
+    } else {
+        t.cin=CIN_SYSEX;
+        t.midi0=mySysexBuffer[index++]&0x7f;
+        t.midi1=mySysexBuffer[index++]&0x7f;
+        t.midi2=mySysexBuffer[index++]&0x7f;
+    }
+    MIDI_Device_SendEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *)&t);
+
+    while (index<len) {
+        if (len-index<1) {
+            t.cin=CIN_SYSEX_ENDS_IN_1;
+            t.midi0=MIDIv1_SYSEX_END;
+            t.midi1=t.midi2='\0';
+        } else if (len-index<2) {
+            t.cin=CIN_SYSEX_ENDS_IN_2;
+            t.midi0=mySysexBuffer[index++]&0x7f;
+            t.midi1=MIDIv1_SYSEX_END;
+            t.midi2='\0';
+        } else if (len-index<3) {
+            t.cin=CIN_SYSEX_ENDS_IN_2;
+            t.midi0=mySysexBuffer[index++]&0x7f;
+            t.midi1=mySysexBuffer[index++]&0x7f;
+            t.midi2=MIDIv1_SYSEX_END;
+        } else {
+            t.cin=CIN_SYSEX;
+            t.midi0=mySysexBuffer[index++]&0x7f;
+            t.midi1=mySysexBuffer[index++]&0x7f;
+            t.midi2=mySysexBuffer[index++]&0x7f;
+        }
+        MIDI_Device_SendEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *)&t);
+
+    }
+    MIDI_Device_Flush(&USB_MIDI_Interface);
+}
 
 bool USBMidiEventAvailable (void)
 {
-    
+    bool retVal=false;
+
     if (MIDI_Device_ReceiveEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *)(&currentPacket)))
     {
         if (CIN_IS_SYSEX(currentPacket.cin)) {
             minSysexHandler(currentPacket);
+        } else {
+            retVal=true;
         }
     }
-    
     MIDI_Device_USBTask(&USB_MIDI_Interface);
     USB_USBTask();
+    return retVal;
+}
+
+void SendUSBMidiEvent (MIDI_EVENT_PACKET_t t) {
+    MIDI_Device_SendEventPacket(&USB_MIDI_Interface, (MIDI_EventPacket_t *) &t);
+    MIDI_Device_Flush(&USB_MIDI_Interface);
 }
 
 
