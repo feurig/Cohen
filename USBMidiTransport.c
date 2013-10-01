@@ -68,8 +68,6 @@ USB_ClassInfo_MIDI_Device_t USB_MIDI_Interface =
 void InitializeUSBMidi()
 {
 	SetupHardware();
-    MIDI_EVENT_PACKET_t e;
-//	LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
 	GlobalInterruptEnable();
 
 }

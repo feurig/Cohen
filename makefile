@@ -22,6 +22,7 @@ SRC          = main.c USBMidiTransport.c Descriptors.c MinSysex.c $(LUFA_SRC_USB
 LUFA_PATH    = ../../../../LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 LD_FLAGS     =
+
 AVRDUDE_PROGRAMMER = avr109 # Add this
 AVRDUDE_PORT = /dev/tty.usbmodem1a21
 AVRDUDE_FLAGS = -b57600

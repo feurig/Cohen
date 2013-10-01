@@ -30,12 +30,13 @@ The majority of the usb-midi specification is in single 4 byte events or packets
 
 Because of this the two streams are split out between packets and sysex data. Some of the USB subsystems are interrupt driven. (maple midi zb) and some like lufa are polling based. The data interface must accommodate this. I am trying to arrive at some glue where the lower layers can provide hooks for the maintainance tasks and simply provide an interface like this.
 
-    bool MidiEventAvailable ([interface])
-    void GetMidiEvent ([interface])
-    void SendMidiEvent ([interface])
-    bool SysexAvaliable ([intervace])
-    void GetSysex ([interface])
-    void SendSysex (uint8_t *messege, [interface])
+        void InitializeUSBMidi(void);
+        bool USBMidiEventAvailable (void);
+        MIDI_EVENT_PACKET_t GetUSBMidiEvent (void);
+        void SendUSBMidiEvent (MIDI_EVENT_PACKET_t);
+        bool USBSysexAvaliable (void);
+        uint8_t * GetUSBSysex (void);
+        void SendUSBSysex (uint8_t *messege);
 
 The remaining details should be as hidden and interchangable as possible.
 
