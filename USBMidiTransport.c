@@ -87,6 +87,9 @@ uint8_t * GetUSBSysex (void) {
     return mySysexBuffer;
 };
 
+/* 
+ * This could probably be a lot cleaner. 
+ */
 void SendUSBSysex (uint8_t *messege) {
     uint8_t len=strlen(messege);
     uint8_t index=0;
@@ -151,6 +154,9 @@ void SendUSBSysex (uint8_t *messege) {
     MIDI_Device_Flush(&USB_MIDI_Interface);
 }
 
+/* 
+ * we actually do the usb polling here and handle any sysex's
+ */
 bool USBMidiEventAvailable (void)
 {
     bool retVal=false;
