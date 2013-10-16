@@ -23,7 +23,7 @@ volatile uint8_t mySysexBufferIndex;
  */
 void initBlinkingLights(void);
 void initBlinkingLights(void){
-//    DDRB=0xff;
+    DDRB=0xff;
     PORTB=0x0f;
     _delay_ms(1000) ;
     PORTB=0xf0;
@@ -41,14 +41,13 @@ void initBlinkingLights(void){
 }
 
 int main(void)
-{     DDRB=0xff;
-InitializeUSBMidi();
+{
+    initBlinkingLights();
     
     InitializeUSBMidi();
     
 	for (;;)
-	{       initBlinkingLights();
-
+	{    
 		USBMidiEventAvailable();
 	}
 }
