@@ -1,5 +1,5 @@
 #Overview
-The idea here is to create a lufa based midi framework for use on the stock usb capable arduino. The goal is twofold:
+The idea here is to create a lufa based midi framework for use on the stock usb capable arduino and other atmega32u4 boards. The goal is twofold:
 
 1. to isolate the lower level usb functions from the actual programs
 
@@ -46,7 +46,7 @@ A minimal sysex handler, called by either the maintainence tasks or by MidiEvent
 This handler should also buffer sysex's that are not directed at the target.
 
 ###Hardware Abstractions.
-Some of the work involved with the LUFA library is to provide feedback for the states of the the usb connection itself. This requires a hardware abstraction for each board supported by the library. In our use case this  would better be served by providing weak functions to be overridden user functions. 
+Some of the work involved with the LUFA library is to provide feedback for the states of the the usb connection itself. This requires a hardware abstraction for each board supported by the library. In our use case this  would better be served by providing weak functions to be overridden by user functions. 
 
 
 
