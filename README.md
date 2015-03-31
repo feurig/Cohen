@@ -1,28 +1,5 @@
 #Overview
-The idea here is to create a lufa based midi framework for use on the stock usb capable arduino and other atmega32u4 boards. The goal is twofold:
-
-1. to isolate the lower level usb functions from the actual programs
-
-    a. Targeted transports
-    
-        1. Lufa
-        2. Maple Midi
-        3. A neutered version of pjrc's Arduino midi
-        4. Microchip's midi code.
-        5. Port of MCs midi client to pic32 (dip)
-        5. A port of jboones nuvoton cdc code to midi.
-        6. YOUR CONTRIBUTION HERE...
-   
-    b. Targeted Libraries
-    
-        1. Arduino midi v1 (gpl2)
-        2. Arruino midi v2 (gpl3)
-        3. alex normans stack (gpl3)
-        4. A bsd liscensed framework soon to be released.
-        5. YOUR LIBRARY HERE….
-      
-
-2. To create a minimal framework for identifying resetting and loading code onto midi devices.
+The idea here is to create a lufa based midi framework for use on the stock usb capable arduino and other atmega32u4 boards. The goal here is to create a minimal framework for identifying resetting and loading code onto midi devices.
 
 
 ###Breakdown
