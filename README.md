@@ -5,7 +5,7 @@ The idea here is to create a lufa based midi framework for use on the stock usb 
 ###Breakdown
 The majority of the usb-midi specification is in single 4 byte events or packets. The exception to this are sysex messages which are arbitrary in length. 
 
-Because of this the two streams are split out between packets and sysex data. Some of the USB subsystems are interrupt driven. (maple midi zb) and some like lufa are polling based. The data interface must accommodate this. I am trying to arrive at some glue where the lower layers can provide hooks for the maintainance tasks and simply provide an interface like this.
+Because of this the two streams are split out between packets and sysex data. Some of the USB subsystems are interrupt driven. (maple midi zb) and some like lufa are polling based. The data interface must accommodate this. I was originally trying to arrive at some glue where the lower layers can provide hooks for the maintainance tasks and simply provide an interface like this.
 
         void InitializeUSBMidi(void);
         bool USBMidiEventAvailable (void);
