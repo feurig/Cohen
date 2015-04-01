@@ -20,11 +20,6 @@ The remaining details should be as hidden and interchangable as possible.
 ###MinSysex
 A minimal sysex handler, called by either the maintainence tasks or by MidiEventAvailable(), should handle at a minimum the universal sysex id request and response and a (mma) vender specific sysex to jump to a bootloader. This should be expanded to identify the capabilities, architecture, and code loader method, and perhaps a subset of common midi settings (channel,mode etc.) Eventually this sysex subset will form a protocall called "Let's Get Loaded (LGL)"
 
-This handler should also buffer sysex's that are not directed at the target.
-
-###Hardware Abstractions.
-Some of the work involved with the LUFA library is to provide feedback for the states of the the usb connection itself. This requires a hardware abstraction for each board supported by the library. In our use case this  would better be served by providing weak functions to be overridden by user functions. 
-
-
-
+This handler should also buffer sysex's that and provide hooks for passing them on if they dont belong to the device
+and for handling them belong to the device but arent handled by MinSysex.
 
