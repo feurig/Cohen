@@ -1,5 +1,5 @@
 #Overview
-The idea here is to create a lufa based midi framework for use on the stock usb capable arduino and other atmega32u4 boards. The other goal here is to create a minimal framework for identifying resetting and loading code onto midi devices.
+The origional idea here was to create a lufa based midi framework for use on the stock usb capable arduino and other atmega32u4 boards. At that time the arduino midi library was restrictively open (hence lufa). The other goal here was to create a minimal framework for identifying resetting and loading code onto midi devices. Since then the arduino midi library has adopted a more usable liscense and the usb stack is also midi friendly. This should be reworked and revisited.
 
 
 ###Breakdown
